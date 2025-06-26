@@ -1,1 +1,0 @@
-﻿Jan ;Kowalski;123456789;abc@def.pl
