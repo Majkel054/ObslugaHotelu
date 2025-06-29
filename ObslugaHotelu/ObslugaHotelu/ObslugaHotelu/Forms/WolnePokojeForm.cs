@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class WolnePokojeForm : Form
+    public class WolnePokojeForm : BaseForm
     {
         private DataGridView dgvWolnePokoje;
         private readonly string plikPokoi = "pokoje.txt";
