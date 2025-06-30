@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class ListaPokoiForm : Form
+    public class ListaPokoiForm : BaseForm
     {
         private DataGridView dgvPokoje;
         private Button btnDodajPokoj;
