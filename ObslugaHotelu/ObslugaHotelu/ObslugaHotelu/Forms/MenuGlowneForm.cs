@@ -5,7 +5,7 @@ using ObslugaHotelu.Forms;
 
 namespace ObslugaHotelu
 {
-    public partial class MenuGlowneForm : Form
+    public partial class MenuGlowneForm : BaseForm
     {
         public MenuGlowneForm()
         {
