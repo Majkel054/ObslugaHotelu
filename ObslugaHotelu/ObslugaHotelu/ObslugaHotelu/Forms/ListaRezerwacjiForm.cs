@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class ListaRezerwacjiForm : Form
+    public class ListaRezerwacjiForm : BaseForm
     {
         private DataGridView dgvRezerwacje;
         private readonly string plikRezerwacji = "rezerwacje.txt";
