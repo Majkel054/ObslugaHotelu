@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class MainForm : Form
+    public class MainForm : BaseForm
     {
         private Button btnDodajKlienta;
         private Button btnListaKlientow;
