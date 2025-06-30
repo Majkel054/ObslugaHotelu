@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class RezerwujPokojForm : Form
+    public class RezerwujPokojForm : BaseForm
     {
         private ComboBox cmbKlienci;
         private ComboBox cmbPokoje;
