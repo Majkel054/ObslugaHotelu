@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class ListaKlientowForm : Form
+    public class ListaKlientowForm : BaseForm
     {
         private DataGridView dgvKlienci;
         private readonly string plikKlientow = "klienci.txt";
