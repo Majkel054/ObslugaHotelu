@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class EdytujRezerwacjeForm : Form
+    public class EdytujRezerwacjeForm : BaseForm
     {
         private TextBox txtPokoj;
         private DateTimePicker dtpDataOd;
