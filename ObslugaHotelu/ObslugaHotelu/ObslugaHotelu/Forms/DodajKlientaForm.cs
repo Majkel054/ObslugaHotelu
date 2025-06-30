@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ObslugaHotelu.Forms
 {
-    public class DodajKlientaForm : Form
+    public class DodajKlientaForm : BaseForm
     {
         private TextBox txtImie;
         private TextBox txtNazwisko;
