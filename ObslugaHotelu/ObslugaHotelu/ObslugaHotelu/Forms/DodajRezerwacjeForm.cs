@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ObslugaHotelu.Forms
 {
-    public class DodajRezerwacjeForm : Form
+    public class DodajRezerwacjeForm : BaseForm
     {
         private ComboBox cmbKlient;
         private ComboBox cmbPokoj;
