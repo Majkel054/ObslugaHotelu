@@ -37,7 +37,8 @@
 
 3. **Klasy**
 
-    “DodajKlienta” to formularz w aplikacji, który służy do dodawania nowego klienta. Pozwala użytkownikowi wpisać dane klienta i zapisać je do pliku             tekstowego.
+    “DodajKlienta” to formularz w aplikacji, który służy do dodawania nowego klienta. Pozwala użytkownikowi wpisać dane klienta i zapisać je do pliku tekstowego.
+
     Odpowiada za:
    
     -Wyświetlanie formularza z polami: Imię, Nazwisko, Telefon, Email.
