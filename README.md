@@ -2,25 +2,30 @@
     Program obsługuje rezerwacje hotelowe, pozwala na ich dodawanie oraz usuwanie, przypisywanie pokoju do danej rezerwacji, zarządzanie klientami               (dodawanie, usuwanie, przypisywanie rezerwacji), sprawdzanie dostępności pokoju w danych terminach. Służyć ma do zarządzania rezerwacjami, a więc             przeznaczony jest dla pracowników hotelowych, m.in. recepcjonistów. 
 2. **Architektura**
     System rezerwacji pokoi składa się z kilku głównych elementów, które razem umożliwiają wygodne zarządzanie pokojami, klientami i rezerwacjami w hotelu       lub pensjonacie. Każdy element ma swoją konkretną rolę:
-    “Klienci” - to dane o osobach, które korzystają z hotelu.
+
+   “Klienci” - to dane o osobach, które korzystają z hotelu.
     System przechowuje ich imię, nazwisko i telefon, aby później łatwo było sprawdzać, kto zarezerwował dany pokój.
-    “Pokoje” - to lista pokoi dostępnych w hotelu.
+
+   “Pokoje” - to lista pokoi dostępnych w hotelu.
      Każdy pokój ma:
     -swój numer,
     -liczbę miejsc do spania,
     -informację, ile jest w nim łóżek pojedynczych i podwójnych.
-    “Widoki” - System posiada cztery główne ekrany, które pozwalają użytkownikowi (np. recepcjoniście) sprawnie obsługiwać hotel:
+
+   “Widoki” - System posiada cztery główne ekrany, które pozwalają użytkownikowi (np. recepcjoniście) sprawnie obsługiwać hotel:
     -Lista Rezerwacji — wyświetla wszystkie rezerwacje razem z informacjami o kliencie i terminie pobytu.
     -Rezerwuj Pokój — pozwala wybrać pokój i klienta, a następnie zapisać nową rezerwację.
     -Wolne Pokoje — prezentuje listę pokoi, które w danym momencie są dostępne.
     -Lista Pokoi — wyświetla wszystkie pokoje dostępne w hotelu.
-    “Pliki danych” - System przechowuje dane w prostych plikach tekstowych:
+
+   “Pliki danych” - System przechowuje dane w prostych plikach tekstowych:
     -klienci.txt — dane klientów,
     -pokoje.txt — dane pokoi,
     -rezerwacje.txt — dane rezerwacji.
     Te pliki pozwalają systemowi pamiętać i pokazywać wcześniej wprowadzone dane.
 
-3. **Klasy**
+4. **Klasy**
+
     “DodajKlienta” to formularz w aplikacji, który służy do dodawania nowego klienta. Pozwala użytkownikowi wpisać dane klienta i zapisać je do pliku             tekstowego.
     Odpowiada za:
     -Wyświetlanie formularza z polami: Imię, Nazwisko, Telefon, Email.
@@ -103,7 +108,7 @@
     -Zapisuje rezerwację do pliku rezerwacje.txt.
     -Pokazuje komunikat „Rezerwacja została zapisana” i zamyka formularz.
 
-4. **Zastosowanie paradygmatu obiektowego w programie**
+6. **Zastosowanie paradygmatu obiektowego w programie**
     4.1  Struktura klas (Modelowanie obiektowe)
      --Klient
     Rola: reprezentuje dane klienta – model danych (imię, nazwisko, telefon, email)
@@ -179,7 +184,7 @@
     Umożliwia zamianę obiektu klienta na tekst w określonym formacie (np. przy zapisie do
     pliku), różnie niż domyślna implementacja klasy object.
 
- 5. **Cykl życia obiektów**
+ 7. **Cykl życia obiektów**
       Klienci
     -Dodawanie: Klienci pojawiają się w systemie, gdy ktoś zgłasza chęć rezerwacji. Dane takiej osoby (imię, nazwisko, telefon) zostają zapisane w pliku          klienci.txt.
     -Odczyt: System może później odczytać te dane, aby pokazać je podczas rezerwacji.
@@ -201,7 +206,7 @@
     Minie data jej zakończenia (jest „zamknięta”),
     Albo gdy użytkownik ręcznie usunie ją poprzez modyfikację pliku.
 
-6. **Przykładowy przepływ działania programu**
+8. **Przykładowy przepływ działania programu**
       Uruchomienie systemu
     – Otwiera się główny ekran i wczytuje listę rezerwacji z pliku rezerwacje.txt.
     – Klienci i pokoje są odczytywani z plików klienci.txt i pokoje.txt.
@@ -218,7 +223,7 @@
     - Nie mają aktywnej rezerwacji.
     - Są dostępne do wynajęcia.
 
-7. **Uruchomienie programu z wiersza poleceń**
+9. **Uruchomienie programu z wiersza poleceń**
    Aby uruchomić program z wiersza poleceń należy wpisać nazwę pliku wykonywalnego ObslugaHotelu.exe w linii poleceń a następnie wcisnąć ENTER. Jeśli           program nie znajduje się w domyślnym katalogu koniczne będzie podanie pełnej ścieżki dostępu.
    Przykład:
    C:\Users\user> ObslugaHotelu.exe
