@@ -420,5 +420,6 @@
 **Schemat UML, "Działanie programu" oraz "Struktura plików" znajdują się w osobnym pliku .pdf.**
 
 8. **Autorzy**
-    Michał Krawczyk
+   
+    Michał Krawczyk,
     Michał Szymiczek
