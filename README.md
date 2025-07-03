@@ -39,6 +39,7 @@
 
     “DodajKlienta” to formularz w aplikacji, który służy do dodawania nowego klienta. Pozwala użytkownikowi wpisać dane klienta i zapisać je do pliku             tekstowego.
     Odpowiada za:
+   
     -Wyświetlanie formularza z polami: Imię, Nazwisko, Telefon, Email.
    
     -Umożliwianie zapisu danych klienta po kliknięciu przycisku „Zapisz”.
@@ -48,13 +49,15 @@
     -Zapis dane do pliku tekstowego “klienci.txt”, oddzielając dane średnikami (;).
    
     Zmienne w klasie:
+   
     -“TextBox txtImie, txtNazwisko, txtTelefon, txtEmail” – pola tekstowe, gdzie użytkownik wpisuje dane.
    
     -“Button btnZapisz” – przycisk, który zapisuje dane klienta po kliknięciu.
    
     -“string plikKlientow” = "klienci.txt" – ścieżka do pliku, gdzie zapisywane są dane klientów.
    
-    Metody: 
+    Metody:
+   
     “InitializeComponents()”
     -Tworzy i ustawia wygląd elementów graficznych (etykiety, pola, przycisk).
    
@@ -63,6 +66,7 @@
     -Podłącza przycisk do akcji: btnZapisz.Click += BtnZapisz_Click.
    
     “BtnZapisz_Click(...)”
+   
     -Sprawdza, czy wszystkie pola są wypełnione.
    
     -Jeśli nie → pokazuje komunikat o błędzie.
@@ -74,7 +78,9 @@
     -Jeśli wszystko jest OK → dane zostaną dodane do pliku (ten fragment kodu zapewne będzie dalej, ale jeszcze go nie wysłałeś).
     
     “DodajPokoj” to formularz w aplikacji, który służy do dodawania nowego pokoju hotelowego. Użytkownik wypełnia pola dotyczące pokoju i zapisuje te informacje do pliku tekstowego pokoje.txt.
-    Odpowiada za:
+
+   Odpowiada za:
+   
     -Wyświetlnie formularza z polami do wypełnienia: numer pokoju, liczba miejsc, łóżka pojedyncze, łóżka podwójne.
    
     -Sprawdzenie, czy wszystkie dane zostały wpisane.
@@ -82,11 +88,13 @@
     -Zapisywanie danych do pliku pokoje.txt.
    
     Zmienne w klasie:
+   
     -“txtNumer” – pole tekstowe do wpisania numeru pokoju.
    
     -“txtMiejsca” – liczba wszystkich miejsc (np. 3 osoby).
    
     -“txtLozkaPojedyncze” – ile jest łóżek pojedynczych.
+   
     -“txtLozkaPodwojne” – ile jest łóżek podwójnych.
    
     -“btnZapisz” – przycisk, który po kliknięciu zapisuje dane.
@@ -94,10 +102,13 @@
     -“plikPokoi” – nazwa pliku, do którego zapisywane są pokoje (pokoje.txt).
    
     Metody:
+   
     “DodajPokojForm()” – konstruktor:
+   
     -Tworzy nowe okno i ustawia jego wygląd przez wywołanie InitializeComponents().
    
     “InitializeComponents()” – inicjalizacja formularza:
+   
     -Tworzy wszystkie pola, etykiety i przycisk.
    
     -Ustawia ich pozycje, rozmiary i wygląd.
@@ -107,6 +118,7 @@
     -Podłącza przycisk btnZapisz do metody, która zapisuje dane (BtnZapisz_Click).
    
     “BtnZapisz_Click(...)” – co się dzieje po kliknięciu „Zapisz”:
+   
     -Sprawdza, czy użytkownik wypełnił wszystkie pola.
    
     -Jeśli czegoś brakuje → pokazuje komunikat o błędzie.
@@ -114,7 +126,9 @@
     -Jeśli wszystko jest OK: tworzy jeden tekstowy wiersz z danymi, oddzielonymi średnikami, dopisuje ten wiersz do pliku pokoje.txt, pokazuje komunikat         „Pokój został dodany!”, zamyka formularz.
     
     “DodajRezerwacje” to okno w aplikacji graficznej, które służy do tworzenia nowej rezerwacji pokoju przez klienta na konkretny termin.
+   
     Odpowiada za:
+   
     -Wyświetlenie formularza, w którym można wybrać:
    
      klienta (z listy wczytanej z pliku klienci.txt),
@@ -128,6 +142,7 @@
     -Zapisanie nowej rezerwacji do pliku rezerwacje.txt.
    
     Zmienne w klasie:
+   
     -“plikKlientow, plikPokoi, plikRezerwacji” – ścieżki do plików z danymi.
    
     -“klienci, pokoje” – listy przechowujące dane o klientach i pokojach.
@@ -139,10 +154,13 @@
     -“btnZapisz” – przycisk do zapisania rezerwacji.
    
     Metody:
+   
     “DodajRezerwacjeForm()” – konstruktor:
+   
     -Uruchamia okno, ustawia wygląd i wczytuje dane klientów i pokoi.
    
      “InitializeComponents()” – ustawianie wyglądu formularza:
+   
     -Tworzy wszystkie elementy graficzne (etykiety, listy rozwijane, daty, przycisk).
    
     -Ustawia ich rozmieszczenie i styl.
@@ -152,6 +170,7 @@
     -Przycisk Zapisz jest podpięty do metody BtnZapisz_Click.
    
     “WczytajDane()” – wczytuje dane z plików:
+   
     -Z klienci.txt – ładuje dane klientów do listy i do rozwijanej listy (ComboBox):
    
     -Wyświetla ich jako: Imię Nazwisko (Telefon).
@@ -159,6 +178,7 @@
     -Z pokoje.txt – ładuje numery pokoi do drugiej listy rozwijanej.
    
      “BtnZapisz_Click()” – zapisanie nowej rezerwacji:
+   
     -Sprawdza, czy coś zostało wybrane:
    
     - Jeśli nie wybrano klienta lub pokoju → pokazuje błąd.
@@ -173,11 +193,12 @@
    
     -Pokazuje komunikat „Rezerwacja została zapisana” i zamyka formularz.
 
-4. **Zastosowanie paradygmatu obiektowego w programie**
+5. **Zastosowanie paradygmatu obiektowego w programie**
 
    4.1  Struktura klas (Modelowanie obiektowe)
 
    --Klient
+   
     Rola: reprezentuje dane klienta – model danych (imię, nazwisko, telefon, email)
    
     Plik: Klient.cs
@@ -188,6 +209,7 @@
     FromString()
    
     --KlientManager
+   
     Rola: logika biznesowa zarządzania klientami (dodawanie, pobieranie)
    
     Plik: KlientManager.cs
@@ -197,6 +219,7 @@
     Zastosowanie: klasa z metodami statycznymi do operacji na danych klientów
    
     --WolnePokojeForm : BaseForm
+   
     Rola: formularz pokazujący wolne pokoje w tabeli
    
     Plik: WolnePokojeForm.cs
@@ -207,6 +230,7 @@
     (WczytajWolnePokoje)
    
      --RezerwujPokojForm : BaseForm
+   
     Rola: formularz służący do rezerwacji pokoju
    
     Plik: RezerwujPokojForm.cs
@@ -216,6 +240,7 @@
     Zastosowanie: obsługuje logikę rezerwacji, operuje na danych z plików
    
     --MenuGlowneForm : BaseForm
+   
     Rola: główne menu aplikacji – punkt startowy GUI
    
     Plik: MenuGlowneForm.cs
@@ -226,6 +251,7 @@
     WolnePokojeForm().ShowDialog();
    
      --DodajKlientaForm : BaseForm
+   
     Rola: formularz do wprowadzania danych nowego klienta
    
     Plik: DodajKlientaForm.cs
@@ -235,6 +261,7 @@
     Zastosowanie: działa na obiekcie Klient, współpracuje z KlientManager
    
      --DodajRezerwacjeForm : BaseForm
+   
     Rola: formularz umożliwiający dodanie rezerwacji
 
     Plik: DodajRezerwacjeForm.cs
@@ -244,6 +271,7 @@
     Zastosowanie: operuje na danych pokoi, klientów i dat
    
     --DodajPokojForm : BaseForm
+   
     Rola: formularz dodający nowe pokoje do systemu
    
     Plik: DodajPokojForm.cs
@@ -253,6 +281,7 @@
     Zastosowanie: logika zapisu danych pokoju do pliku
    
     --ListaKlientowForm : BaseForm
+   
     Rola: pokazuje listę klientów
    
     Plik: ListaKlientowForm.cs
@@ -262,6 +291,7 @@
     Zastosowanie: odczyt danych z pliku, generowanie widoku tabeli
    
     --ListaRezerwacjiForm : BaseForm
+   
     Rola: wyświetla wszystkie rezerwacje
    
     Plik: ListaRezerwacjiForm.cs
@@ -278,6 +308,7 @@
     class WolnePokojeForm : BaseForm
    
     4.3 Polimorfizm
+   
     Polimorfizm pozwala różnym klasom na wspólne interfejsy/metody, ale z różną
     implementacją lub zachowaniem.
    
@@ -289,16 +320,20 @@
     W klasie Klient, przesłonięto metodę ToString(), dziedziczoną z klasy object. Dzięki temu
     obiekt Klient może być zamieniany na tekst w określony sposób.
    
-    Przykład: public override string ToString()
+    Przykład:
+
+   public override string ToString()
     {
     return $"{Imie},{Nazwisko},{Telefon},{Email}";
     }
+   
     Umożliwia zamianę obiektu klienta na tekst w określonym formacie (np. przy zapisie do
     pliku), różnie niż domyślna implementacja klasy object.
 
- 5. **Cykl życia obiektów**
+ 7. **Cykl życia obiektów**
      
       Klienci
+    
     -Dodawanie: Klienci pojawiają się w systemie, gdy ktoś zgłasza chęć rezerwacji. Dane takiej osoby (imię, nazwisko, telefon) zostają zapisane w pliku klienci.txt.
     
     -Odczyt: System może później odczytać te dane, aby pokazać je podczas rezerwacji.
@@ -306,6 +341,7 @@
     -Usuwanie: Klienci mogą być usunięci ręcznie (poza systemem) poprzez edycję pliku, gdy stracą swoją ważność.
        
       Pokoje
+    
     -Dodawanie: Nowe pokoje pojawiają się w pliku pokoje.txt, gdy hotel je uruchamia.
     
     -Odczyt: System sprawdza ten plik przy wyświetlaniu listy pokoi i gdy chcemy dokonać rezerwacji.
@@ -313,6 +349,7 @@
     -Usuwanie: Pokój może być usunięty poprzez ręczną edycję pliku (np. gdy pokój jest zamykany).
     
       Rezerwacje
+    
     -Dodawanie: Powstają, gdy użytkownik (np. recepcjonista) wybierze:
     
     Klienta,
@@ -324,6 +361,7 @@
     i potwierdzi rezerwację. Dane trafiają do pliku rezerwacje.txt.
     
     -Odczyt: System używa danych rezerwacji, aby:
+    
     Pokazać listę aktywnych rezerwacji,
     
     Sprawdzić dostępność pokoi (czy pokój jest zajęty w wybranym terminie).
@@ -334,7 +372,7 @@
     
     Albo gdy użytkownik ręcznie usunie ją poprzez modyfikację pliku.
 
-7. **Przykładowy przepływ działania programu**
+9. **Przykładowy przepływ działania programu**
 
       Uruchomienie systemu
    
@@ -366,7 +404,7 @@
       
     - Są dostępne do wynajęcia.
 
-9. **Uruchomienie programu z wiersza poleceń**
+10. **Uruchomienie programu z wiersza poleceń**
 
    Aby uruchomić program z wiersza poleceń należy wpisać nazwę pliku wykonywalnego ObslugaHotelu.exe w linii poleceń a następnie wcisnąć ENTER. Jeśli program nie znajduje się w domyślnym katalogu koniczne     będzie podanie pełnej ścieżki dostępu.
 
