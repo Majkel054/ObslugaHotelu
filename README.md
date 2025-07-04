@@ -292,45 +292,103 @@
 
  5. **Cykl życia obiektów**
      
-      Klienci
+    5.1 Uruchomienie aplikacji:
     
-    -Dodawanie: Klienci pojawiają się w systemie, gdy ktoś zgłasza chęć rezerwacji. Dane takiej osoby (imię, nazwisko, telefon) zostają zapisane w pliku          klienci.txt.
+    Program startuje od formularza logowania LoginForm.
     
-    -Odczyt: System może później odczytać te dane, aby pokazać je podczas rezerwacji.
+    Tworzony jest obiekt AuthService, który służy do logowania.
     
-    -Usuwanie: Klienci mogą być usunięci ręcznie (poza systemem) poprzez edycję pliku, gdy stracą swoją ważność.
-       
-      Pokoje
+    Jeśli użytkownik wpisze dane, AuthService tworzy połączenie z bazą i szuka użytkownika (User) za pomocą UserRepository.
     
-    -Dodawanie: Nowe pokoje pojawiają się w pliku pokoje.txt, gdy hotel je uruchamia.
+    👉 Utworzone obiekty:
     
-    -Odczyt: System sprawdza ten plik przy wyświetlaniu listy pokoi i gdy chcemy dokonać rezerwacji.
+    LoginForm
     
-    -Usuwanie: Pokój może być usunięty poprzez ręczną edycję pliku (np. gdy pokój jest zamykany).
+    AuthService
     
-      Rezerwacje
+    UserRepository
     
-    -Dodawanie: Powstają, gdy użytkownik (np. recepcjonista) wybierze:
+    User (jeśli logowanie zakończone sukcesem)
+
+    5.2 Logowanie:
     
-    Klienta,
+    Jeśli logowanie przebiegnie pomyślnie, tworzony jest główny formularz MainForm, który zawiera cztery sekcje:
     
-    Pokój,
+    ClientsControl
     
-    Termin od/do,
+    RoomsControl
     
-    i potwierdzi rezerwację. Dane trafiają do pliku rezerwacje.txt.
+    ReservationsControl
     
-    -Odczyt: System używa danych rezerwacji, aby:
+    UserManagementControl
     
-    Pokazać listę aktywnych rezerwacji,
+    👉 Tworzone obiekty:
     
-    Sprawdzić dostępność pokoi (czy pokój jest zajęty w wybranym terminie).
+    MainForm
     
-    -Usuwanie: Rezerwacja przestaje być aktywna, gdy:
+    ClientsControl, RoomsControl, ReservationsControl, UserManagementControl
+
+    5.3 Zarządzanie danymi:
     
-    Minie data jej zakończenia (jest „zamknięta”),
+    W każdej z sekcji użytkownik może wykonać operacje:
     
-    Albo gdy użytkownik ręcznie usunie ją poprzez modyfikację pliku.
+    ➕ Dodawanie:
+    
+    Tworzony jest formularz edycyjny (ClientEditForm, RoomEditForm, itd.)
+    
+    Tworzony jest obiekt encji (Client, Room, Reservation, User) i przekazywany do repozytorium w celu zapisania.
+    
+    ✏️ Edycja:
+    
+    Pobierany jest obiekt z bazy (np. Room) przez odpowiednie Repository.
+    
+    Przekazywany do formularza edycyjnego.
+    
+    Po edycji aktualizowany w repozytorium.
+    
+    ❌ Usuwanie:
+    
+    Użytkownik wybiera obiekt z listy.
+    
+    Repozytorium usuwa go na podstawie ID.
+    
+    👉 Utworzone/wykorzystane obiekty:
+    
+    Client, Room, Reservation, User
+    
+    ClientRepository, RoomRepository, ReservationRepository, UserRepository
+    
+    Formularze edycyjne
+
+     5.4 Repozytoria:
+    
+    Repozytoria mają dość długi cykl życia:
+    
+    Tworzone przy inicjalizacji kontrolki (np. ClientsControl tworzy ClientRepository).
+    
+    Pozostają aktywne przez cały czas działania tej kontrolki.
+    
+    Przechowują logikę dostępu do danych: odczyt, zapis, aktualizacja, usuwanie.
+    
+    👉 Długo żyjące obiekty:
+    
+    Wszystkie Repository
+
+    5.5 Zamknięcie aplikacji:
+    
+    Użytkownik zamyka MainForm.
+    
+    Wszystkie formularze i obiekty zostają automatycznie zniszczone (usunięte z pamięci).
+    
+    Połączenia z bazą są zamykane (jeśli były otwarte).
+    
+    👉 Zakończenie życia obiektów:
+    
+    Wszystkie formularze (LoginForm, MainForm, formularze edycyjne)
+    
+    Wszystkie kontrolki (ClientsControl itd.)
+    
+    Repozytoria, encje (User, Client itd.)
 
 6. **Przykładowy przepływ działania programu**
 
