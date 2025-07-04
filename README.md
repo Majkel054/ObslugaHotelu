@@ -12,195 +12,145 @@
 
 2. **Architektura**
 
-   System rezerwacji pokoi składa się z kilku głównych elementów, które razem umożliwiają wygodne zarządzanie pokojami, klientami i rezerwacjami w hotelu       lub pensjonacie. Każdy element ma swoją          konkretną rolę:
-
-   “Klienci” - to dane o osobach, które korzystają z hotelu.
-    System przechowuje ich imię, nazwisko i telefon, aby później łatwo było sprawdzać, kto zarezerwował dany pokój.
-
-   “Pokoje” - to lista pokoi dostępnych w hotelu.
-     Każdy pokój ma:
-    -swój numer,
+    Program został zaprojektowany w architekturze warstwowej, która dzieli całość systemu na moduły odpowiedzialne za różne funkcje. To ułatwia rozwój,           utrzymanie i testowanie aplikacji.
+    
+    Główne warstwy:
+    
+    1. Warstwa danych (Data Layer)
+    
+    Zawiera klasy reprezentujące dane oraz repozytoria do zarządzania nimi.
+    
+    Reprezentacja danych to klasy: User, Client, Room, Reservation.
+    
+    Dostęp do danych realizowany jest przez klasy Repository, które umożliwiają m.in. pobieranie, dodawanie i usuwanie danych.
+    
+    2. Warstwa logiki biznesowej (Business Logic Layer)
+       
+    Zawiera klasy obsługujące reguły działania programu.
+    
+    Np. klasa AuthService odpowiada za logowanie użytkowników, weryfikację hasła, rejestrację itd.
+    
+    Weryfikacja dostępności pokoi przy rezerwacji również należy do logiki biznesowej.
+    
+    3. Warstwa prezentacji (UI Layer)
+       
+    To formularze Windows Forms (Form), takie jak LoginForm, MainForm, ClientEditForm, ReservationEditForm itd.
+    
+    Te klasy umożliwiają użytkownikowi interakcję z systemem.
+    
+    Obsługują zdarzenia takie jak kliknięcia przycisków, wprowadzanie danych, wybieranie opcji itp.
    
-    -liczbę miejsc do spania,
-   
-    -informację, ile jest w nim łóżek pojedynczych i podwójnych.
-
-   “Widoki” - System posiada cztery główne ekrany, które pozwalają użytkownikowi (np. recepcjoniście) sprawnie obsługiwać hotel:
-    -Lista Rezerwacji — wyświetla wszystkie rezerwacje razem z informacjami o kliencie i terminie pobytu.
-   
-    -Rezerwuj Pokój — pozwala wybrać pokój i klienta, a następnie zapisać nową rezerwację.
-   
-    -Wolne Pokoje — prezentuje listę pokoi, które w danym momencie są dostępne.
-   
-    -Lista Pokoi — wyświetla wszystkie pokoje dostępne w hotelu.
-
-   “Pliki danych” - System przechowuje dane w prostych plikach tekstowych:
-    -klienci.txt — dane klientów,
-   
-    -pokoje.txt — dane pokoi,
-   
-    -rezerwacje.txt — dane rezerwacji.
-   
-    Te pliki pozwalają systemowi pamiętać i pokazywać wcześniej wprowadzone dane.
-
 3. **Klasy**
 
-    “DodajKlienta” to formularz w aplikacji, który służy do dodawania nowego klienta. Pozwala użytkownikowi wpisać dane klienta i zapisać je do pliku tekstowego.
+    3.1 User
 
-    Odpowiada za:
-   
-    -Wyświetlanie formularza z polami: Imię, Nazwisko, Telefon, Email.
-   
-    -Umożliwianie zapisu danych klienta po kliknięciu przycisku „Zapisz”.
-   
-    -Sprawdzenie, czy klient z takim telefonem lub e-mailem już istnieje, zanim doda go do pliku.
-   
-    -Zapis dane do pliku tekstowego “klienci.txt”, oddzielając dane średnikami (;).
-   
-    Zmienne w klasie:
-   
-    -“TextBox txtImie, txtNazwisko, txtTelefon, txtEmail” – pola tekstowe, gdzie użytkownik wpisuje dane.
-   
-    -“Button btnZapisz” – przycisk, który zapisuje dane klienta po kliknięciu.
-   
-    -“string plikKlientow” = "klienci.txt" – ścieżka do pliku, gdzie zapisywane są dane klientów.
-   
-    Metody:
-   
-    “InitializeComponents()”
-    -Tworzy i ustawia wygląd elementów graficznych (etykiety, pola, przycisk).
-   
-    -Ustawia tytuł okna, rozmiar, kolor tła itp.
-   
-    -Podłącza przycisk do akcji: btnZapisz.Click += BtnZapisz_Click.
-   
-    “BtnZapisz_Click(...)”
-   
-    -Sprawdza, czy wszystkie pola są wypełnione.
-   
-    -Jeśli nie → pokazuje komunikat o błędzie.
-   
-    -Sprawdza, czy telefon lub email już istnieje w pliku.
-   
-    -Jeśli istnieje → pokazuje błąd i nie dodaje klienta.
-   
-    -Jeśli wszystko jest OK → dane zostaną dodane do pliku (ten fragment kodu zapewne będzie dalej, ale jeszcze go nie wysłałeś).
-    
-    “DodajPokoj” to formularz w aplikacji, który służy do dodawania nowego pokoju hotelowego. Użytkownik wypełnia pola dotyczące pokoju i zapisuje te informacje do pliku tekstowego pokoje.txt.
+   Reprezentuje użytkownika systemu (np. administratora lub pracownika).
 
-   Odpowiada za:
-   
-    -Wyświetlnie formularza z polami do wypełnienia: numer pokoju, liczba miejsc, łóżka pojedyncze, łóżka podwójne.
-   
-    -Sprawdzenie, czy wszystkie dane zostały wpisane.
-   
-    -Zapisywanie danych do pliku pokoje.txt.
-   
-    Zmienne w klasie:
-   
-    -“txtNumer” – pole tekstowe do wpisania numeru pokoju.
-   
-    -“txtMiejsca” – liczba wszystkich miejsc (np. 3 osoby).
-   
-    -“txtLozkaPojedyncze” – ile jest łóżek pojedynczych.
-   
-    -“txtLozkaPodwojne” – ile jest łóżek podwójnych.
-   
-    -“btnZapisz” – przycisk, który po kliknięciu zapisuje dane.
-   
-    -“plikPokoi” – nazwa pliku, do którego zapisywane są pokoje (pokoje.txt).
-   
-    Metody:
-   
-    “DodajPokojForm()” – konstruktor:
-   
-    -Tworzy nowe okno i ustawia jego wygląd przez wywołanie InitializeComponents().
-   
-    “InitializeComponents()” – inicjalizacja formularza:
-   
-    -Tworzy wszystkie pola, etykiety i przycisk.
-   
-    -Ustawia ich pozycje, rozmiary i wygląd.
-   
-    -Dodaje je do formularza (czyli do okna aplikacji).
-   
-    -Podłącza przycisk btnZapisz do metody, która zapisuje dane (BtnZapisz_Click).
-   
-    “BtnZapisz_Click(...)” – co się dzieje po kliknięciu „Zapisz”:
-   
-    -Sprawdza, czy użytkownik wypełnił wszystkie pola.
-   
-    -Jeśli czegoś brakuje → pokazuje komunikat o błędzie.
-   
-    -Jeśli wszystko jest OK: tworzy jeden tekstowy wiersz z danymi, oddzielonymi średnikami, dopisuje ten wiersz do pliku pokoje.txt, pokazuje komunikat         „Pokój został dodany!”, zamyka formularz.
+    Właściwości:
     
-    “DodajRezerwacje” to okno w aplikacji graficznej, które służy do tworzenia nowej rezerwacji pokoju przez klienta na konkretny termin.
-   
-    Odpowiada za:
-   
-    -Wyświetlenie formularza, w którym można wybrać:
-   
-     klienta (z listy wczytanej z pliku klienci.txt),
-   
-     pokój (z listy wczytanej z pliku pokoje.txt),
-   
-     datę rozpoczęcia i zakończenia rezerwacji.
-   
-    -Sprawdzenie, czy dane są poprawnie wypełnione.
-   
-    -Zapisanie nowej rezerwacji do pliku rezerwacje.txt.
-   
-    Zmienne w klasie:
-   
-    -“plikKlientow, plikPokoi, plikRezerwacji” – ścieżki do plików z danymi.
-   
-    -“klienci, pokoje” – listy przechowujące dane o klientach i pokojach.
-   
-    -“cmbKlient, cmbPokoj” – listy rozwijane do wyboru klienta i pokoju.
-   
-    -“dtpDataOd, dtpDataDo” – pola do wyboru dat (kiedy rezerwacja się zaczyna i kończy).
-   
-    -“btnZapisz” – przycisk do zapisania rezerwacji.
-   
+    Id, Name, Surname, Username, PasswordHash, Role
+    
+    Funkcja:
+    
+    Umożliwia logowanie, zarządzanie kontami, autoryzację.
+
+   3.2 Client
+
+   Reprezentuje klienta hotelu (osobę rezerwującą pokój).
+
+    Właściwości:
+    
+    Id, Name, Surname
+    
+    Funkcja:
+    
+    Przechowuje podstawowe dane klientów.
+
+    3.3 Room
+
+   Reprezentuje pokój hotelowy.
+
+    Właściwości:
+    
+    Id, Number, Type (enum), PricePerNight, IsAvailable
+    
+    Funkcja:
+    
+    Definiuje numer pokoju, jego typ, cenę i dostępność.
+
+   3.4 Reservation
+
+   Reprezentuje rezerwację pokoju przez klienta.
+
+    Właściwości:
+    
+    Id, ClientId, RoomId, StartDate, EndDate
+    
+    Funkcja:
+    
+    Przechowuje informacje o rezerwacjach w danym terminie.
+
+   3.5 GenericRespository<T>
+
+     Klasa ogólna (generyczna) do obsługi operacji CRUD (Create, Read, Update, Delete).
+    
+    Właściwości:
+    
+    _tableName – nazwa tabeli
+    
     Metody:
+    
+    GetAll(), Get(id), Add(item), Update(item), Delete(id)
+    
+    Funkcja:
+    
+    Wspólna baza dla wszystkich repozytoriów (User, Room itd.)
+
+    3.6 Repozytoria
+
+   (UserRepository, ClientRepository, RoomRepository, ReservationRepository)
    
-    “DodajRezerwacjeForm()” – konstruktor:
-   
-    -Uruchamia okno, ustawia wygląd i wczytuje dane klientów i pokoi.
-   
-     “InitializeComponents()” – ustawianie wyglądu formularza:
-   
-    -Tworzy wszystkie elementy graficzne (etykiety, listy rozwijane, daty, przycisk).
-   
-    -Ustawia ich rozmieszczenie i styl.
-   
-    -Dodaje je do formularza.
-   
-    -Przycisk Zapisz jest podpięty do metody BtnZapisz_Click.
-   
-    “WczytajDane()” – wczytuje dane z plików:
-   
-    -Z klienci.txt – ładuje dane klientów do listy i do rozwijanej listy (ComboBox):
-   
-    -Wyświetla ich jako: Imię Nazwisko (Telefon).
-   
-    -Z pokoje.txt – ładuje numery pokoi do drugiej listy rozwijanej.
-   
-     “BtnZapisz_Click()” – zapisanie nowej rezerwacji:
-   
-    -Sprawdza, czy coś zostało wybrane:
-   
-    - Jeśli nie wybrano klienta lub pokoju → pokazuje błąd.
-      
-    -Sprawdza daty:
-   
-    - Data „od” nie może być późniejsza niż „do”.
-      
-    -Tworzy zapis rezerwacji
-   
-    -Zapisuje rezerwację do pliku rezerwacje.txt.
-   
-    -Pokazuje komunikat „Rezerwacja została zapisana” i zamyka formularz.
+    Każde z nich dziedziczy po GenericRepository<T> i zarządza odpowiednim typem danych.
+
+   3.7 AuthService
+
+   Zajmuje się logiką uwierzytelniania i rejestracji użytkowników.
+
+    Metody:
+    
+    Login(username, password)
+    
+    RegisterUser(...)
+
+   3.8 Database
+
+   Statyczna klasa odpowiedzialna za inicjalizację bazy danych i udostępnianie połączenia SQLite.
+
+   **Formularze**
+
+   3.9 LoginForm
+
+   Ekran logowania.
+
+    Używa AuthService do logowania.
+
+   3.10 MainForm
+
+   Główne okno aplikacji po zalogowaniu.
+
+    Zawiera panele (kontrolki) zarządzania: klientami, pokojami, rezerwacjami, użytkownikami.
+
+   3.11 ClientEditForm, RoomEditForm, ReservationEditForm, UserEditForm
+
+   Formularze do edycji danych poszczególnych encji.
+
+    Obsługują przyciski zapisu, walidację, wypełnianie pól.
+
+   3.12 ClientsControl, RoomsControl, ReservationsControl, UserManagementControl
+
+   Kontrolki odpowiedzialne za zarządzanie listami danych.
+
+    Obsługują operacje dodawania, edytowania, usuwania.
 
 4. **Zastosowanie paradygmatu obiektowego w programie**
 
@@ -384,39 +334,23 @@
 
 6. **Przykładowy przepływ działania programu**
 
-      Uruchomienie systemu
-   
-    – Otwiera się główny ekran i wczytuje listę rezerwacji z pliku rezerwacje.txt.
-   
-    – Klienci i pokoje są odczytywani z plików klienci.txt i pokoje.txt.
-   
-      Dodanie nowej rezerwacji
-   
-    – Użytkownik wybiera Klienta i Pokój.
-   
-    – Podaje daty rezerwacji.
-   
-    – System sprawdza, czy pokój jest dostępny (analizując plik rezerwacje.txt).
-   
-    – Jeśli pokój jest wolny, nowa rezerwacja jest zapisywana.
-   
-      Wyświetlenie listy rezerwacji
-   
-    – System odczytuje plik rezerwacje.txt i łączy dane Klienta (z pliku klienci.txt) z numerami pokoi.
-   
-    – Wynik prezentowany jest użytkownikowi w przejrzystej tabeli.
-   
-      Wyświetlenie wolnych pokoi
-   
-    – System sprawdza plik rezerwacje.txt i filtruje listę pokoi (pokoje.txt) tak, aby pokazać te, które:
-   
-    - Nie mają aktywnej rezerwacji.
-      
-    - Są dostępne do wynajęcia.
+   Użytkownik uruchamia aplikację.
+
+    Otwiera się LoginForm, gdzie użytkownik się loguje.
+    
+    Po poprawnym logowaniu otwierany jest MainForm.
+    
+    W MainForm użytkownik może:
+    
+    Przejść do zakładek klientów, pokoi, rezerwacji, użytkowników.
+    
+    Tam używa przycisków, by dodawać, edytować lub usuwać dane.
+    
+    Dane zapisywane są do plików lub bazy danych przez repozytoria.   
 
 7. **Uruchomienie programu z wiersza poleceń**
 
-   Aby uruchomić program z wiersza poleceń należy wpisać nazwę pliku wykonywalnego ObslugaHotelu.exe w linii poleceń a następnie wcisnąć ENTER. Jeśli program nie znajduje się w domyślnym katalogu koniczne     będzie podanie pełnej ścieżki dostępu.
+   Aby uruchomić program z wiersza poleceń należy wpisać nazwę pliku wykonywalnego ObslugaHotelu.exe w linii poleceń a następnie wcisnąć ENTER. Jeśli             program nie znajduje się w domyślnym katalogu koniczne     będzie podanie pełnej ścieżki dostępu.
 
    Przykład:
    
