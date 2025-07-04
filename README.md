@@ -1,6 +1,14 @@
 1. **Wstęp**
 
-   Program obsługuje rezerwacje hotelowe, pozwala na ich dodawanie oraz usuwanie, przypisywanie pokoju do danej rezerwacji, zarządzanie klientami               (dodawanie, usuwanie, przypisywanie rezerwacji), sprawdzanie dostępności pokoju w danych terminach. Służyć ma do zarządzania rezerwacjami, a więc             przeznaczony jest dla pracowników hotelowych, m.in. recepcjonistów. 
+  Aplikacja do Zarządzania Hotelem to proste narzędzie desktopowe, stworzone w technologii Windows Forms, które umożliwia podstawowe zarządzanie kluczowymi aspektami funkcjonowania hotelu. Na obecnym etapie aplikacja pozwala na:
+  
+•	Zarządzanie Użytkownikami: Dodawanie, edytowanie i usuwanie kont użytkowników z różnymi rolami (Admin, Receptionist, User), z uwzględnieniem mechanizmu logowania i hashowania haseł (BCrypt). Zapewnia to bezpieczny dostęp do systemu.
+
+•	Zarządzanie Klientami: Prowadzenie bazy danych klientów hotelu, z możliwością dodawania, edycji i usuwania ich danych.
+
+•	Zarządzanie Pokojami: Ewidencja pokoi hotelowych wraz z ich numerami, typami, cenami za noc oraz statusem dostępności. Możliwe jest dodawanie, edycja i usuwanie pokoi.
+
+•	Zarządzanie Rezerwacjami: Tworzenie, modyfikowanie i usuwanie rezerwacji dla klientów w konkretnych pokojach na określone daty. System wstępnie filtruje dostępne pokoje na podstawie wybranych dat, aby unikać nakładających się rezerwacji.
 
 2. **Architektura**
 
@@ -194,148 +202,149 @@
    
     -Pokazuje komunikat „Rezerwacja została zapisana” i zamyka formularz.
 
-5. **Zastosowanie paradygmatu obiektowego w programie**
+4. **Zastosowanie paradygmatu obiektowego w programie**
 
-   4.1  Struktura klas (Modelowanie obiektowe)
+   W projekcie zaimplementowano kluczowe elementy paradygmatu obiektowego:
+   
+      4.1. Hermetyzacja (Encapsulation)
+       
+      Hermetyzacja to zasada ukrywania wewnętrznego stanu obiektu i udostępniania go na zewnątrz tylko poprzez publiczne metody (interfejs). Pozwala to na          kontrolowanie dostępu do danych i zapewnienie spójności obiektu.
+      
+      Przykłady w kodzie:
+      
+      •	Klasy Modeli (User, Client, Room, Reservation):
+      
+      o	Wszystkie właściwości w tych klasach są zazwyczaj publiczne, ale ich implementacja wewnętrzna (np. sposób przechowywania danych) może być ukryta.          Co ważniejsze, logika biznesowa związana z tymi obiektami (np. walidacja danych przed zapisem) jest często zawarta w metodach, a nie bezpośrednio w          dostępie do pól.
+      
+      o	Przykład: W klasie User właściwości takie jak Id, Name, Surname, Username, PasswordHash, Role są dostępne, ale modyfikacja PasswordHash odbywa się          poprzez zewnętrzny serwis (AuthService), który zapewnia hashowanie, co jest formą hermetyzacji logicznej.
+      
+      •	Klasy Repozytoriów (UserRepository, ClientRepository, RoomRepository, ReservationRepository):
+      
+      o	Repozytoria hermetyzują logikę dostępu do danych. Ich wewnętrzne działanie (np. konkretne zapytania SQL, zarządzanie połączeniami z bazą danych)          jest ukryte przed klasami UI. Klasy UI jedynie wywołują publiczne metody takie jak Add(), Get(), Update(), Delete(), nie wiedząc, jak dokładnie są one       realizowane.
+      
+      o	Przykład: 
+      
+      W /Repositories/UserRepository.cs (oraz innych repozytoriach) metoda Add(User user) ukrywa całą logikę związaną z tworzeniem połączenia z bazą danych,       budowaniem zapytania SQL i wykonaniem operacji INSERT.
+      
+      •	Klasy Formularzy/Kontrolek UI (ClientEditForm, ReservationEditForm, RoomsControl itp.):
+      
+      o	Kontrolki UI hermetyzują logikę interakcji użytkownika i walidacji danych wejściowych. Nie muszą wiedzieć o tym, jak działają repozytoria czy             serwisy.
+      
+      o	Przykład: W /UI/RoomEditForm.cs, metoda buttonSave_Click zawiera walidację pól formularza. Ta logika jest zawarta w formularzu i jest                      odpowiedzialna za upewnienie się, że dane są poprawne, zanim zostaną przekazane do _roomRepository. Szczegóły dotyczące, jak _roomRepository zapisuje          dane, są ukryte.
+      
+      4.2 Dziedziczenie (Inheritance)
+         
+      Dziedziczenie to mechanizm, w którym jedna klasa (klasa pochodna/subklasa) dziedziczy właściwości i metody innej klasy (klasy bazowej/superklasy).             Pozwala to na ponowne wykorzystanie kodu i tworzenie hierarchii klas.
+      
+      Przykłady w kodzie:
+      
+      •	GenericRepository<T> i Specyficzne Repozytoria:
+      
+      o	To jest doskonały przykład dziedziczenia w projekcie. Klasa GenericRepository<T> (gdzie T to typ modelu, np. User, Client, Room, Reservation)                prawdopodobnie stanowi klasę bazową, która implementuje ogólne operacje CRUD (Create, Read, Update, Delete).
+      
+      o	Konkretne repozytoria, takie jak UserRepository, ClientRepository, RoomRepository, ReservationRepository, dziedziczą z GenericRepository<T>, co             oznacza, że automatycznie otrzymują podstawową funkcjonalność CRUD. Dzięki temu unika się powielania kodu dla każdej encji.
+      
+      o	Lokalizacja: Chociaż kod GenericRepository<T> nie został dostarczony, jego obecność jest silnie sugerowana przez użycie UserRepository,                      ClientRepository, RoomRepository, ReservationRepository, które prawdopodobnie są jego pochodnymi.
+      
+      	UserRepository (w kontekście /UI/UserEditForm.cs i /UI/UserManagementControl.cs)
+      
+      	ClientRepository (w kontekście /UI/ClientEditForm.cs i /UI/ClientsControl.cs)
+      
+      	RoomRepository (w kontekście /UI/RoomEditForm.cs i /UI/RoomsControl.cs)
+      
+      	ReservationRepository (w kontekście /UI/ReservationEditForm.cs i /UI/ReservationsControl.cs)
+      
+      o	Przykład (hipotetyczny, jak wyglądałoby dziedziczenie):
+      
+      // Klasa bazowa (zakładana)
+      
+      public abstract class GenericRepository<T> where T : BaseModel // Założenie, że BaseModel ma Id
+      {
+          protected string _tableName;
+          // ... implementacja GetAll, Get, Add, Update, Delete
+      }
+      
+      // Klasa pochodna (jak np. UserRepository)
+      
+      public class UserRepository : GenericRepository<User>
+      {
+          public UserRepository()
+          {
+              _tableName = "Users"; // Ustawienie nazwy tabeli dla konkretnego repozytorium
+          }
+          // ... dodatkowe metody specyficzne dla użytkowników (np. GetByUsername)
+      }
+      
+      •	Klasy Formularzy i Kontrolek Użytkownika:
+      
+      o	LoginForm, ClientEditForm, ReservationEditForm, RoomEditForm, UserEditForm dziedziczą z System.Windows.Forms.Form.
+      
+      o	ClientsControl, ReservationsControl, RoomsControl, UserManagementControl dziedziczą z System.Windows.Forms.UserControl.
+      
+      o	Lokalizacja:
+      
+      	UserEditForm : Form (w /UI/UserEditForm.cs)
+      
+      	ReservationsControl : UserControl (w /UI/ResrvationsControl.cs)
+      
+      	RoomEditForm : Form (w /UI/RoomEditForm.cs)
+      
+      	RoomsControl : UserControl (w /UI/RoomsControl.cs)
+      
+      o	To dziedziczenie zapewnia, że te klasy mają wszystkie podstawowe funkcjonalności formularzy i kontrolek Windows Forms (np. zarządzanie zdarzeniami,          rysowanie na ekranie, właściwości Text, Controls itp.) bez konieczności ich ponownego implementowania.
+      
+      4.3. Polimorfizm (Polymorphism)
+         
+      Polimorfizm ("wiele form") pozwala obiektom różnych klas być traktowanymi jako obiekty wspólnego typu. Najczęściej objawia się poprzez nadpisywanie          metod (override) lub implementację interfejsów.
+      
+      Przykłady w kodzie:
+      
+      •	Nadpisywanie metody ToString():
+      
+      o	Wiele klas modelowych (User, Client, Room, Reservation) nadpisuje metodę ToString() (dziedziczoną z object). Dzięki temu, gdy obiekt tych klas jest       dodawany do ListBox (np. listBoxUsers.Items.Add(user)), ListBox automatycznie wywołuje ich nadpisaną metodę ToString() w celu wyświetlenia czytelnej          reprezentacji obiektu.
+      
+      o	Lokalizacja:
+      	public override string ToString() w klasie Reservation (w /UI/ResrvationsControl.cs, zagnieżdżona klasa DisplayReservationItem).
+      
+      	public override string ToString() w klasie User (w kontekście /UI/UserManagmentControl.cs - listBoxUsers.Items.Add(user)).
+      
+      	public override string ToString() w klasie Client (w kontekście /UI/ClientsControl.cs - listBoxClients.Items.Add(client)).
+      
+      	public override string ToString() w klasie Room (w kontekście /UI/RoomsControl.cs - listBoxRooms.Items.Add(room)).
+      
+      o	Przykład z Reservation w DisplayReservationItem:
+      
+      // W klasie DisplayReservationItem w /UI/ResrvationsControl.cs
+      
+      public override string ToString()
+      {
+          // Tworzenie czytelnego ciągu tekstowego do wyświetlenia
+          string clientName = Client != null ? $"{Client.Name} {Client.Surname}" : $"Klient ID: {Reservation.ClientId} (nieznany)";
+          string roomInfo = Room != null ? $"Pokój {Room.Number} ({Room.Type})" : $"Pokój ID: {Reservation.RoomId} (nieznany)";
+          return $"{clientName} - {roomInfo} od {Reservation.StartDate.ToShortDateString()} do {Reservation.EndDate.ToShortDateString()}";
+      }
+      
+      •	
+      
+      o	Jest to polimorfizm, ponieważ ListBox "nie wie", jakiego dokładnie typu obiekt został do niego dodany, ale wie, że każdy obiekt posiada metodę             ToString(), którą może wywołać, aby uzyskać tekst do wyświetlenia.
+      
+      •	Obsługa zdarzeń (EventHandler):
+      
+      o	Wiele przycisków w aplikacji (buttonSave, buttonAdd, buttonEdit, buttonDelete itp.) oraz kontrolek takich jak ListBox (SelectedIndexChanged) ma             przypisane metody obsługujące zdarzenia. Te metody mają wspólny sygnaturę (object sender, EventArgs e).
+      
+      o	Lokalizacja: W plikach *.Designer.cs i *.cs dla każdego formularza/kontrolki, np.:
+      
+      	this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click); (w /UI/UserEditForm.Designer.cs)
+      
+      	private void buttonSave_Click(object sender, EventArgs e) (w /UI/UserEditForm.cs)
+      
+      o	System Windows Forms używa polimorfizmu, wywołując metodę Invoke na delegacie EventHandler, która z kolei wywołuje konkretną metodę obsługi                zdarzenia, niezależnie od jej specyficznej implementacji
 
-   --Klient
-   
-    Rola: reprezentuje dane klienta – model danych (imię, nazwisko, telefon, email)
-   
-    Plik: Klient.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Models
-   
-    Zastosowanie: klasa z właściwościami, konstruktorem, metodami ToString() i
-    FromString()
-   
-    --KlientManager
-   
-    Rola: logika biznesowa zarządzania klientami (dodawanie, pobieranie)
-   
-    Plik: KlientManager.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Managers
-   
-    Zastosowanie: klasa z metodami statycznymi do operacji na danych klientów
-   
-    --WolnePokojeForm : BaseForm
-   
-    Rola: formularz pokazujący wolne pokoje w tabeli
-   
-    Plik: WolnePokojeForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: tworzy UI z DataGridView, ma prywatne metody
-    (WczytajWolnePokoje)
-   
-     --RezerwujPokojForm : BaseForm
-   
-    Rola: formularz służący do rezerwacji pokoju
-   
-    Plik: RezerwujPokojForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: obsługuje logikę rezerwacji, operuje na danych z plików
-   
-    --MenuGlowneForm : BaseForm
-   
-    Rola: główne menu aplikacji – punkt startowy GUI
-   
-    Plik: MenuGlowneForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: inicjuje inne formularze jako obiekty, np. new
-    WolnePokojeForm().ShowDialog();
-   
-     --DodajKlientaForm : BaseForm
-   
-    Rola: formularz do wprowadzania danych nowego klienta
-   
-    Plik: DodajKlientaForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: działa na obiekcie Klient, współpracuje z KlientManager
-   
-     --DodajRezerwacjeForm : BaseForm
-   
-    Rola: formularz umożliwiający dodanie rezerwacji
-
-    Plik: DodajRezerwacjeForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: operuje na danych pokoi, klientów i dat
-   
-    --DodajPokojForm : BaseForm
-   
-    Rola: formularz dodający nowe pokoje do systemu
-   
-    Plik: DodajPokojForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: logika zapisu danych pokoju do pliku
-   
-    --ListaKlientowForm : BaseForm
-   
-    Rola: pokazuje listę klientów
-   
-    Plik: ListaKlientowForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: odczyt danych z pliku, generowanie widoku tabeli
-   
-    --ListaRezerwacjiForm : BaseForm
-   
-    Rola: wyświetla wszystkie rezerwacje
-   
-    Plik: ListaRezerwacjiForm.cs
-   
-    Przestrzeń nazw: ObslugaHotelu.Forms
-   
-    Zastosowanie: pobiera dane z pliku rezerwacje.txt, przetwarza i prezentuje
-   
-    4.2 Dziedziczenie
-   
-    W aplikacji dziedziczenie występuję w kontekście interfejsu użytkownika. Formularze
-    dziedziczą po klasie bazowej Form z biblioteki System.Windows.Forms. Jako przykład
-    Dziedziczenia możemy podać tak naprawdę każdą klasę z folderu Form, przykład : public
-    class WolnePokojeForm : BaseForm
-   
-    4.3 Polimorfizm
-   
-    Polimorfizm pozwala różnym klasom na wspólne interfejsy/metody, ale z różną
-    implementacją lub zachowaniem.
-   
-    -Polimorfizm przez dziedziczenie (działanie wspólnych metod Form)
-    Wszystkie klasy dziedziczące po System.Windows.Forms.Form mogą być używane zamiennie
-    jako okna, mimo że każda z nich ma inny kod i wygląd.
-   
-    -Polimorfizm przez przesłanianie metod
-    W klasie Klient, przesłonięto metodę ToString(), dziedziczoną z klasy object. Dzięki temu
-    obiekt Klient może być zamieniany na tekst w określony sposób.
-   
-    Przykład:
-
-   public override string ToString()
-    {
-    return $"{Imie},{Nazwisko},{Telefon},{Email}";
-    }
-   
-    Umożliwia zamianę obiektu klienta na tekst w określonym formacie (np. przy zapisie do
-    pliku), różnie niż domyślna implementacja klasy object.
-
- 7. **Cykl życia obiektów**
+ 5. **Cykl życia obiektów**
      
       Klienci
     
-    -Dodawanie: Klienci pojawiają się w systemie, gdy ktoś zgłasza chęć rezerwacji. Dane takiej osoby (imię, nazwisko, telefon) zostają zapisane w pliku klienci.txt.
+    -Dodawanie: Klienci pojawiają się w systemie, gdy ktoś zgłasza chęć rezerwacji. Dane takiej osoby (imię, nazwisko, telefon) zostają zapisane w pliku          klienci.txt.
     
     -Odczyt: System może później odczytać te dane, aby pokazać je podczas rezerwacji.
     
@@ -373,7 +382,7 @@
     
     Albo gdy użytkownik ręcznie usunie ją poprzez modyfikację pliku.
 
-9. **Przykładowy przepływ działania programu**
+6. **Przykładowy przepływ działania programu**
 
       Uruchomienie systemu
    
@@ -405,7 +414,7 @@
       
     - Są dostępne do wynajęcia.
 
-10. **Uruchomienie programu z wiersza poleceń**
+7. **Uruchomienie programu z wiersza poleceń**
 
    Aby uruchomić program z wiersza poleceń należy wpisać nazwę pliku wykonywalnego ObslugaHotelu.exe w linii poleceń a następnie wcisnąć ENTER. Jeśli program nie znajduje się w domyślnym katalogu koniczne     będzie podanie pełnej ścieżki dostępu.
 
@@ -417,9 +426,90 @@
    
    C:\Users\user> C:\Program Files\ObslugaHotelu.exe
 
+8. **Co można udoskonalić w tym programie**
+
+      Istnieje wiele obszarów, w których aplikacja może zostać rozszerzona i ulepszona, aby zapewnić lepszą funkcjonalność i doświadczenie użytkownika:
+   
+      8.1.	Automatyczne oznaczanie dostępności pokoi:
+   
+      o	Problem: Obecnie status IsAvailable dla pokoju jest statyczny. Po utworzeniu rezerwacji, pokój technicznie jest nadal oznaczony jako "Dostępny".
+   
+      o	Ulepszenie: Zaimplementuj logikę, która automatycznie zmienia status IsAvailable pokoju na false, gdy jest on zarezerwowany w danym okresie. Po             zakończeniu rezerwacji, status powinien automatycznie wrócić na true. Wymagałoby to rozbudowania logiki w ReservationRepository lub w serwisie                obsługującym rezerwacje.
+   
+      8.2.	Podgląd historii zmian/audyt:
+   
+      o	Problem: Obecnie nie ma śledzenia, kto i kiedy wprowadził zmiany w danych (np. kto dodał klienta, edytował pokój, czy usunął rezerwację).
+   
+      o	Ulepszenie: Dodaj mechanizm logowania operacji (np. tabelę AuditLog w bazie danych), która rejestrowałaby:
+   
+      	Datę i godzinę zmiany
+   
+      	Użytkownika, który dokonał zmiany
+   
+      	Rodzaj operacji (dodanie, edycja, usunięcie)
+   
+      	Typ obiektu (Klient, Pokój, Rezerwacja, Użytkownik)
+   
+      	(Opcjonalnie) Stare i nowe wartości dla edytowanych pól.
+   
+      o	Wymagałoby to modyfikacji wszystkich metod Add, Update, Delete w repozytoriach, aby logowały te informacje.
+   
+      8.3.	Wizualne ulepszenia interfejsu użytkownika (UI/UX):
+   
+      o	Problem: Obecny wygląd jest standardowy dla Windows Forms i może być mało atrakcyjny lub nieintuicyjny.
+   
+      o	Ulepszenia:
+   
+      	Walidacja wizualna: Zamiast MessageBox.Show dla błędów walidacji, użyj ErrorProvider lub wizualnie podświetl pola z błędami, co jest mniej                inwazyjne dla użytkownika.
+   
+      	Lepsze formatowanie dat/czasów: Rozważ użycie niestandardowego formatowania w DateTimePicker lub w widoku rezerwacji, aby były bardziej czytelne.
+   
+      	Szersze kolumny/elastyczne układy: Dostosuj szerokości ListBox i kolumn, aby zawartość była w pełni widoczna, niezależnie od długości tekstu.
+   
+      	Ikony: Dodaj odpowiednie ikony do przycisków akcji (Dodaj, Edytuj, Usuń), aby poprawić intuicyjność.
+   
+      	Responsywny design: Jeśli aplikacja miałaby działać na różnych rozmiarach ekranu, rozważ użycie kontrolek kontenerowych (TableLayoutPanel,                   FlowLayoutPanel) do bardziej elastycznego układu.
+   
+      	Stylizacja: Zastosowanie niestandardowych stylów lub bibliotek UI (jeśli projekt na to pozwala), aby nadać aplikacji bardziej nowoczesny wygląd.
+   
+      8.4.	Raporty i statystyki:
+   
+      o	Problem: Brak możliwości generowania raportów dotyczących obłożenia, dochodów czy popularności pokoi.
+   
+      o	Ulepszenie: Dodaj sekcję raportów, która pozwalałaby generować:
+   
+      	Raporty obłożenia pokoi w danym okresie.
+   
+      	Zestawienia dochodów z rezerwacji.
+   
+      	Listy dostępnych pokoi na przyszłe daty.
+   
+      	Raporty klientów (np. najczęściej rezerwujący).
+   
+      8.5.	Filtrowanie i wyszukiwanie:
+   
+      o	Problem: Listy klientów, pokoi i rezerwacji mogą stać się bardzo długie.
+   
+      o	Ulepszenie: Dodaj pola wyszukiwania i filtry, które pozwolą użytkownikom szybko znaleźć konkretne dane (np. wyszukiwanie klienta po nazwisku,             filtrowanie pokoi po typie, filtrowanie rezerwacji po dacie).
+   
+      8.6.	Ulepszone zarządzanie dostępnością pokoi w rezerwacji:
+   
+      o	Problem: Formularz rezerwacji filtruje pokoje, ale nie wyświetla informacji o nakładających się rezerwacjach w jasny sposób
+   .
+      o	Ulepszenie: Rozbuduj logikę, aby użytkownik widział, które pokoje są niedostępne i dlaczego (np. poprzez wyświetlenie nakładających się dat                rezerwacji).
+   
+      8.7.	Zarządzanie cenami sezonowymi / promocjami:
+   
+      o	Problem: Cena za noc jest stała dla pokoju.
+   
+      o	Ulepszenie: Dodaj możliwość definiowania specjalnych cen dla pokoi w określonych datach (np. wyższe ceny w sezonie, niższe w promocji).
+   
+      Te propozycje mogą znacznie zwiększyć użyteczność i profesjonalizm aplikacji.
+
+
 **Schemat UML, "Działanie programu" oraz "Struktura plików" znajdują się w osobnym pliku .pdf.**
 
-8. **Autorzy**
+9. **Autorzy**
    
     Michał Krawczyk,
     Michał Szymiczek
