@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="UI\ClientEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\ClientsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UI\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\ReservationEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\ReservationsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UI\RoomEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\RoomsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UI\UserEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\UserManagementControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
